@@ -156,7 +156,7 @@
 
         <!-- BEGIN - Credit Card Form -->
         <form method="post" action="/pay">
-            <div id="myDropIn"></div>
+            <!-- insert Drop-in container here -->
             <br>
             <input class="btn btn-primary btn-lg btn-block" type="submit" value="Order Now!">
         </form>
@@ -183,16 +183,7 @@
     <script src="js/bootstrap.min.js"></script>
 
     <!-- BEGIN BT Client Initialization -->
-    <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
-    <script>
-        $.get('/get_token', function (response) {
-            var token = response.clientToken;
-
-            braintree.setup(token, 'dropin', {
-                container: "myDropIn"
-            });
-        });
-    </script>
+    
     <!-- END BT Client Initialization -->
 
 </body>
