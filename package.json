@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "braintree": "^1.40.0",
+    "braintree": "^1.41.0",
     "express": "^4.14.0",
-    "request": "^2.73.0"
+    "request": "^2.74.0"
   }
 }
