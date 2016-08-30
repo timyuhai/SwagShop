@@ -141,22 +141,22 @@
         <!-- /.row -->
 
         <!-- Selection Box -->
-        <div class="row">
-            <div class="col-lg-12 form-group">
-                <label>Select your item</label>
-                <select class="form-control" name="price">
-                    <option value="3.99">Sticker Set - $3.99</option>
-                    <option value="5.99">Braintree_Dev Earphones - $5.99</option>
-                    <option value="9000.00">Smart Home Kit - $9000.00</option>
-                </select>
+        <form method="post" action="/pay">
+            <!-- Selection Box -->
+            <div class="row">
+                <div class="col-lg-12 form-group">
+                    <label>Select your item</label>
+                    <select class="form-control" name="price">
+                        <option value="3.99">Sticker Set - $3.99</option>
+                        <option value="5.99">Braintree_Dev Earphones - $5.99</option>
+                        <option value="9000.00">Smart Home Kit - $9000.00</option>
+                    </select>
+                </div>
+
             </div>
 
-        </div>
-
-
-        <!-- BEGIN - Credit Card Form -->
-        <form method="post" action="/pay">
-            <!-- insert Drop-in container here -->
+            <!-- Braintree Drop-in UI container -->
+            
             <br>
             <input class="btn btn-primary btn-lg btn-block" type="submit" value="Order Now!">
         </form>
