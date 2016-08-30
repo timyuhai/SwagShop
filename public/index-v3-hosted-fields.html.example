@@ -110,7 +110,7 @@
                     <div class="caption">
                         <h3>BattleHack 2015 Sticker Set</h3>
                         <p>Collector's Edition.  Gotta catch'em all!</p>
-                        <h3 class="bg-info">$3.99</h3></p>
+                        <h3 class="bg-info">$3.99 CAD</h3></p>
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                     <div class="caption">
                         <h3>Braintree_Dev Earphones</h3>
                         <p>Listen in style :)</p>
-                        <h3 class="bg-info">$5.99</h3></p>
+                        <h3 class="bg-info">FREE!!</h3></p>
                     </div>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                     <div class="caption">
                         <h3>Smart Home Kit</h3>
                         <p>PYH - Pimp your home!</p>
-                        <h3 class="bg-info">$9000.00</h3></p>
+                        <h3 class="bg-info">Over 9000!!! CAD</h3></p>
                     </div>
                 </div>
             </div>
@@ -140,8 +140,9 @@
         </div>
         <!-- /.row -->
 
+
         <!-- BEGIN - Credit Card Form -->
-        <form method="post" action="/pay">
+        <form id="checkout-form" method="post" action="/pay">
             <!-- Selection Box -->
             <div class="row">
                 <div class="col-lg-12 form-group">
@@ -155,9 +156,18 @@
 
             </div>
 
+            <label for="card-number">Card Number</label>
+            <div class="form-control hosted-field" id="card-number"></div>
 
-            <div id="myDropIn"></div>
+            <label for="cvv">CVV</label>
+            <div class="form-control hosted-field" id="cvv"></div>
+
+            <label for="expiration-date">Expiration Date</label>
+            <div class="form-control hosted-field" id="expiration-date"></div>
+
+            <input type="hidden" name="payment_method_nonce">
             <br>
+
             <input class="btn btn-primary btn-lg btn-block" type="submit" value="Order Now!">
         </form>
         <!-- END - Credit Card Form -->
@@ -183,14 +193,77 @@
     <script src="js/bootstrap.min.js"></script>
 
     <!-- BEGIN BT Client Initialization -->
-    <script src="https://js.braintreegateway.com/js/braintree-2.27.0.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.0.1/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.0.1/js/hosted-fields.min.js"></script>
+
     <script>
+        var form = document.querySelector('#checkout-form');
+        var submit = document.querySelector('input[type="submit"]');
         $.get('/get_token', function (response) {
             var token = response.clientToken;
 
-            braintree.setup(token, 'dropin', {
-                container: "myDropIn"
+            braintree.client.create({
+              authorization: token
+            }, function (clientErr, clientInstance) {
+              if (clientErr) {
+                // Handle error in client creation
+                return;
+              }
+
+              braintree.hostedFields.create({
+                client: clientInstance,
+                styles: {
+                  'input': {
+                    'font-size': '14pt'
+                  },
+                  'input.invalid': {
+                    'color': 'red'
+                  },
+                  'input.valid': {
+                    'color': 'green'
+                  }
+                },
+                fields: {
+                  number: {
+                    selector: '#card-number',
+                    placeholder: '4111 1111 1111 1111'
+                  },
+                  cvv: {
+                    selector: '#cvv',
+                    placeholder: '123'
+                  },
+                  expirationDate: {
+                    selector: '#expiration-date',
+                    placeholder: '10 / 2019'
+                  }
+                }
+              }, function (hostedFieldsErr, hostedFieldsInstance) {
+                if (hostedFieldsErr) {
+                  // Handle error in Hosted Fields creation
+                  return;
+                }
+
+                submit.removeAttribute('disabled');
+                form.addEventListener('submit', function (event) {
+                  event.preventDefault();
+
+                  hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+                    if (tokenizeErr) {
+                      // Handle error in Hosted Fields tokenization
+                      return;
+                    }
+
+                    // Put `payload.nonce` into the `payment-method-nonce` input, and then
+                    // submit the form. Alternatively, you could send the nonce to your server
+                    // with AJAX.
+                    document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
+                    form.submit();
+                  });
+                }, false);
+
+              });
             });
+
         });
     </script>
     <!-- END BT Client Initialization -->
